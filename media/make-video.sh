@@ -32,7 +32,7 @@ while IFS='|' read -r imgs text; do
   for img in "$@"; do
     i=$((i+1)); frames=$(printf "%.0f" $(echo "$per * 30" | bc))
     ffmpeg -nostdin -loglevel error -y -loop 1 -i scenes/$img.png -t $per \
-      -vf "scale=3200:2000,zoompan=z='min(zoom+0.0004,1.05)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=$frames:s=1600x1000:fps=30,format=yuv420p" \
+      -vf "scale=1600:1000,fps=30,format=yuv420p" \
       -c:v libx264 -preset veryfast -crf 24 $W/$seg-$i.mp4
   done
   # join this segment's clips, then lay the narration under it (0.35s lead-in)
