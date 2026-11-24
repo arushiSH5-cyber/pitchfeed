@@ -63,6 +63,7 @@ const base = (d: number) => `translateZ(${-d * 70}px) translateY(${d * 40}px) ro
 
 export default function CardStack() {
   const leads = useApp((s) => s.leads);
+  const discovering = useApp((s) => s.discovering);
   const { approve, skip, openEdit, go, registerFlyOut } = useApp.getState();
   const p = pending(leads);
   const top = p[0];
@@ -131,7 +132,12 @@ export default function CardStack() {
   return (
     <div className="feed-col">
       <div className="stack" id="stack">
-        {!p.length ? (
+        {discovering ? (
+          <div className="empty">
+            <Char id="c-builder" width={120} />
+            <h3>Searching the web…</h3><p className="muted">The crew is finding real organizations and re-checking every quote against its source page. About a minute.</p>
+          </div>
+        ) : !p.length ? (
           <div className="empty">
             <Char id="c-builder" width={120} />
             <h3>All caught up</h3><p className="muted">The crew is watching for new signals. Check Live signals or your pipeline.</p>

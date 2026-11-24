@@ -12,9 +12,9 @@ export default function LeadBrief() {
         <h4>Contact<span className="chip sage"><Icon id="i-check" size={12} />verified on approve</span></h4>
         <div className="contact"><div className="avatar">{l.buyer.split(" ").map((x) => x[0]).join("")}</div><div><b>{l.buyer}</b><small>{l.title}</small></div></div>
         <div className="verify">
-          <div><span><Icon id="i-mail" size={14} />{l.email}</span><span className="chip">MX ok</span></div>
+          <div><span><Icon id="i-mail" size={14} />{l.email || "Email lookup needs a Hunter key"}</span>{l.email && <span className="chip">MX ok</span>}</div>
           <div><span><Icon id="i-link" size={14} />{l.linkedin || "No LinkedIn found"}</span>{l.linkedin && <span className="chip">match</span>}</div>
-          <div><span><Icon id="i-shield" size={14} />{l.company.split(" ")[0].toLowerCase()}…example · Bay Area HQ</span><span className="chip">domain ok</span></div>
+          <div><span><Icon id="i-shield" size={14} />{l.signals[0].src.split("/")[0]}{l.email ? " · Bay Area HQ" : " · public source"}</span><span className="chip">domain ok</span></div>
         </div>
       </div>
       <div className="card-s">

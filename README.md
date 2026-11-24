@@ -14,7 +14,7 @@
 4. Press **→** three times to approve three leads, then once more: the Flexprice credit gate stops you. Top up.
 5. In the crew room, approve Builder's graph schema change. Then open **Live signals**, **Pipeline** (Simulate replies), **Insights** (Play your week) and **Activity log**.
 
-The hosted site is a static build with demo data and no API keys. Run it locally with a Claude or Gemini key to see live ICP and drafts (below).
+The hosted site is a static build with fictional demo data and no API keys. Type your own product in the intake to try the flow with it. To get a **real pull** (live organizations found with web search, every quote re-checked against its source page, unverified ones dropped), run it locally with a Gemini key (below).
 
 **Demo data, fictional organizations.** The demo product is *Togather*, a volunteer-coordination app selling to Kiwanis clubs, volunteer centers and nonprofits.
 
@@ -92,6 +92,7 @@ Then set `ENGINE_URL=http://localhost:8000` in `web/.env.local` so `/api/discove
 |---|---|---|
 | Claude (ICP + drafts) | `ANTHROPIC_API_KEY` set | Built-in demo ICP and drafts |
 | Gemini (ICP + drafts) | `GEMINI_API_KEY` set and no Claude key | Built-in demo ICP and drafts |
+| **Real web pull** (your own product) | You type your own product in the intake and `GEMINI_API_KEY` has quota | Sample leads, with a note in the crew room |
 | Flexprice metering | `FLEXPRICE_API_KEY` set | Local ledger only (UI always updates) |
 | FastAPI engine | `ENGINE_URL` reachable | Demo leads in `web/lib/demo-data.ts` |
 | Tavily / Hunter / SendGrid (engine) | keys in `engine/.env` | Seeded demo candidates, demo inbox |

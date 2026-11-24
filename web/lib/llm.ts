@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Anthropic from "@anthropic-ai/sdk";
 
 // Provider chain: Claude if ANTHROPIC_API_KEY is set, else Gemini if GEMINI_API_KEY is set, else demo data.
 export const CLAUDE_MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-5-5";
-export const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+export const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 export type Provider = "claude" | "gemini" | "demo";
 export const provider = (): Provider => (process.env.ANTHROPIC_API_KEY ? "claude" : process.env.GEMINI_API_KEY ? "gemini" : "demo");
 
@@ -24,19 +25,32 @@ async function claude(system: string, user: string, maxTokens: number): Promise<
   return res.content.map((b) => (b.type === "text" ? b.text : "")).join("");
 }
 
+/** POST to Gemini generateContent with one retry on a fallback model for 404/429/5xx. Errors carry Google's message. */
+export async function geminiGenerate(body: object, timeoutMs = 30000): Promise<any> {
+  const models = [GEMINI_MODEL, "gemini-flash-latest"].filter((m, i, a) => a.indexOf(m) === i);
+  let last = "";
+  for (const m of models) {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`, {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+    if (r.ok) return r.json();
+    const t = await r.text().catch(() => "");
+    let msg = t; try { msg = JSON.parse(t).error?.message || t; } catch {}
+    last = `gemini ${m} ${r.status}: ${msg.slice(0, 200) || "(empty body)"}`;
+    if (![404, 429, 500, 502, 503, 504].includes(r.status)) break;
+  }
+  throw new Error(last);
+}
+
 async function gemini(system: string, user: string, maxTokens: number): Promise<string | null> {
-  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`, {
-    method: "POST",
-    headers: { "content-type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: system }] },
-      contents: [{ role: "user", parts: [{ text: user }] }],
-      generationConfig: { responseMimeType: "application/json", maxOutputTokens: maxTokens },
-    }),
-    signal: AbortSignal.timeout(30000),
+  const j = await geminiGenerate({
+    systemInstruction: { parts: [{ text: system }] },
+    contents: [{ role: "user", parts: [{ text: user }] }],
+    generationConfig: { responseMimeType: "application/json", maxOutputTokens: maxTokens },
   });
-  if (!r.ok) throw new Error(`gemini ${r.status}`);
-  const j = await r.json();
   return (j.candidates?.[0]?.content?.parts || []).map((p: { text?: string }) => p.text || "").join("") || null;
 }
 

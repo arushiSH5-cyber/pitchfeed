@@ -19,7 +19,7 @@ type S = {
   credits: number; sentToday: number; ledger: Record<Kind, number>; logs: LogRow[];
   leads: Lead[]; incoming: Incoming[]; signalsShown: number; msgs: Msg[]; crewOpen: boolean;
   editId: string | null; mapId: string | null; creditOpen: boolean; wrappedOpen: boolean;
-  toast: { html: string; n: number } | null; leaving: string | null;
+  toast: { html: string; n: number } | null; leaving: string | null; discovering: boolean; liveLeads: boolean;
   flyOut: ((dir: 1 | -1) => void) | null;
 
   setScreen: (s: Screen) => void; go: (v: View) => void; setIntake: (i: Partial<Intake>) => void; setIcp: (i: ICPT, src: "demo" | "claude" | "gemini") => void;
@@ -40,12 +40,14 @@ const meter = (kind: Kind, target: string) => {
 };
 
 export const pending = (leads: Lead[]) => leads.filter((l) => l.status === "pending");
+/** True when the visitor typed their own product instead of using the demo intake. */
+export const isCustom = (i: Intake) => i.product.trim() !== INTAKE.product || i.what.trim() !== INTAKE.what;
 
 export const useApp = create<S>((set, get) => ({
   screen: "intake", view: "feed", intake: INTAKE, icp: ICP, icpSource: "demo",
   credits: START_CREDITS, sentToday: 0, ledger: { graph: 0, enrich: 0, send: 0 }, logs: [],
   leads: makeLeads(), incoming: INCOMING.map((x) => ({ ...x })), signalsShown: 0, msgs: [], crewOpen: true,
-  editId: null, mapId: null, creditOpen: false, wrappedOpen: false, toast: null, leaving: null, flyOut: null,
+  editId: null, mapId: null, creditOpen: false, wrappedOpen: false, toast: null, leaving: null, flyOut: null, discovering: false, liveLeads: false,
 
   setScreen: (screen) => set({ screen }),
   go: (view) => set({ view }),
@@ -78,16 +80,50 @@ export const useApp = create<S>((set, get) => ({
   startApp: () => {
     const g = get();
     set({ screen: "app" });
-    g.leads.forEach((l) => g.spend("graph", l.company));
     g.log("You", "Approved ideal customer profile", g.intake.product, 0);
     g.say("Planner", "Profile approved. <em>@Builder</em> find organizations with a reason to talk now.");
+    later(() => get().say("Builder", "Funding signals keep showing up. Can I add a <b>Grant</b> node type to the graph so grants link to funders? Schema changes need your OK.", "waiting", "schema"), 14000);
+
+    if (isCustom(g.intake)) {
+      // Real pull for the visitor's own product. The demo's sample signals don't apply to it.
+      set({ incoming: [] });
+      if (!HAS_API) {
+        g.sayTyping("Builder", "This hosted demo has no server, so it can't search the web. Showing sample leads so you can try the flow. Run Pitchfeed locally with a Gemini key for a real pull.", 500, "waiting");
+        g.leads.forEach((l) => g.spend("graph", l.company));
+        return;
+      }
+      set({ leads: [], discovering: true });
+      g.sayTyping("Builder", `Searching public job posts, press and event pages for <b>${g.intake.product}</b> buyers. This takes about a minute.`, 400);
+      fetch("/api/discover", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ intake: g.intake, icp: g.icp }) })
+        .then((r) => r.json())
+        .then((j: { mode: string; reason?: string; leads: Lead[]; dropped?: { company: string; reason: string }[] }) => {
+          const s = get();
+          const live = j.mode === "live";
+          set({ leads: j.leads, discovering: false, liveLeads: live });
+          j.leads.forEach((l) => s.spend("graph", l.company));
+          const drops = (j.dropped || []).slice(0, 3).map((d) => `<b>${d.company}</b> (${d.reason})`).join(", ");
+          if (live) {
+            s.say("Builder", `Found ${j.leads.length + (j.dropped?.length || 0)} real organizations.${drops ? ` Dropped ${j.dropped!.length}: ${drops}.` : ""}`);
+            s.sayTyping("Reviewer", `I re-opened every source page. All ${j.leads.length} quotes match word for word. Receipts are on the back of each card.`, 600);
+            later(() => get().say("Planner", `${j.leads.length} real cards are ready for you. Emails need a Hunter key, so sends go to the demo inbox.`, "waiting"), 1500);
+          } else {
+            s.say("Builder", `Live search didn't return verified leads (${j.reason || "unavailable"}). Showing sample leads so you can try the flow.`, "waiting");
+          }
+        })
+        .catch(() => {
+          set({ leads: makeLeads(), discovering: false });
+          get().say("Builder", "Live search is unavailable right now. Showing sample leads.", "waiting");
+        });
+      return;
+    }
+
+    g.leads.forEach((l) => g.spend("graph", l.company));
     g.sayTyping("Builder", "Found 6. Dropped <b>Coastline Animal Rescue</b> (hiring freeze) and <b>Summit Senior Services</b> (outside the Bay Area).", 500);
-    if (HAS_API) fetch("/api/discover", { method: "POST" }).then((r) => r.json()).then((j) => {
-      if (j.mode === "live") get().say("Builder", `Engine run complete: <b>${j.result?.leads ?? "?"}</b> leads kept, <b>${j.result?.dropped ?? "?"}</b> dropped by the citation validator.`);
+    if (HAS_API) fetch("/api/discover", { method: "POST", headers: { "content-type": "application/json" }, body: "{}" }).then((r) => r.json()).then((j) => {
+      if (j.mode === "engine") get().say("Builder", `Engine run complete: <b>${j.result?.leads ?? "?"}</b> leads kept, <b>${j.result?.dropped ?? "?"}</b> dropped by the citation validator.`);
     }).catch(() => {});
     g.sayTyping("Reviewer", "Every quote on the remaining 4 matches its source page. Receipts are on the back of each card.", 1500);
     later(() => get().say("Planner", "4 cards are ready for you.", "waiting"), 2600);
-    later(() => get().say("Builder", "Funding signals keep showing up. Can I add a <b>Grant</b> node type to the graph so grants link to funders? Schema changes need your OK.", "waiting", "schema"), 14000);
     const nextSig = () => {
       const s = get();
       if (s.signalsShown >= s.incoming.length) return;
@@ -115,7 +151,7 @@ export const useApp = create<S>((set, get) => ({
     s.spend("enrich", l.company);
     s.spend("send", l.company);
     set((st) => ({ sentToday: st.sentToday + 1 }));
-    s.sayTyping("Builder", `Verified ${l.email}. MX records look good.`, 250);
+    s.sayTyping("Builder", l.email ? `Verified ${l.email}. MX records look good.` : `No email lookup key yet (Hunter), so this went to the demo inbox only.`, 250);
     s.sayTyping("Planner", "Sent to the demo inbox. Follow-up queued for day 3.", 1100);
     s.showToast(`<svg width="16" height="16"><use href="#i-plane"/></svg>Sent to demo inbox · 6 credits`);
     later(() => set((st) => ({ leaving: null, leads: st.leads.map((x) => (x.id === id ? { ...x, status: "approved", stage: "contacted", by: "you" } : x)) })), 520);
@@ -181,7 +217,7 @@ export const useApp = create<S>((set, get) => ({
       buyer: sig.buyer, title: sig.title, email: first.toLowerCase() + "@" + sig.src.split("/")[0], linkedin: null,
       signals: [{ t: sig.t, q: sig.q, src: sig.src, days: 0, k: sig.k }], path: null, via: null, variant: "Quote",
       subject: `${sig.company.split(" ")[0]} + easier volunteer sign-ups`,
-      body: `Hi ${first},\n\nI came across this from ${sig.company}: “${sig.q}.”\n\nI'm building Togather so volunteers can find a shift in seconds, sign up in one tap and get a reminder before they show up.\n\nWould a 2-minute demo video be useful?\n\nArushi, Togather`,
+      body: `Hi ${first},\n\nI came across this from ${sig.company}: “${sig.q}.”\n\nI'm building Togather so volunteers can find a shift in seconds, sign up in one tap and get a reminder before they show up.\n\nWould a 2-minute demo video be useful?\n\nSam, Togather`,
       status: "pending", stage: "matched", by: "crew",
     };
     set((st) => ({ leads: [...st.leads, l], incoming: st.incoming.map((x) => (x.company === company ? { ...x, added: true } : x)) }));
