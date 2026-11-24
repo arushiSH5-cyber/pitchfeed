@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { HYPE, type Lead } from "@/lib/demo-data";
 import { useApp } from "@/lib/store";
+import { HAS_API } from "@/lib/api";
 import Overlay from "./Overlay";
 import { Icon } from "./Sprites";
 
@@ -30,6 +31,7 @@ export default function EditSheet() {
 
   const redraft = async () => {
     if (!lead) return;
+    if (!HAS_API) return showToast("Live redraft runs locally with a Claude or Gemini key");
     setBusy(true);
     try {
       const r = await fetch("/api/draft", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ lead }) });

@@ -1,5 +1,6 @@
 "use client";
 import { create } from "zustand";
+import { HAS_API } from "./api";
 import { ICP, INCOMING, INTAKE, PRICES, STAGES, makeLeads, now, type ICPT, type Incoming, type Intake, type Lead, type Stage } from "./demo-data";
 
 export type Screen = "intake" | "thinking" | "icp" | "app";
@@ -34,7 +35,7 @@ type S = {
 
 // Fire-and-forget metering; the local ledger is the source of truth for the UI.
 const meter = (kind: Kind, target: string) => {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !HAS_API) return;
   fetch("/api/meter", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ event: kind, amount: PRICES[kind], target }) }).catch(() => {});
 };
 
@@ -81,7 +82,7 @@ export const useApp = create<S>((set, get) => ({
     g.log("You", "Approved ideal customer profile", g.intake.product, 0);
     g.say("Planner", "Profile approved. <em>@Builder</em> find organizations with a reason to talk now.");
     g.sayTyping("Builder", "Found 6. Dropped <b>Coastline Animal Rescue</b> (hiring freeze) and <b>Summit Senior Services</b> (outside the Bay Area).", 500);
-    fetch("/api/discover", { method: "POST" }).then((r) => r.json()).then((j) => {
+    if (HAS_API) fetch("/api/discover", { method: "POST" }).then((r) => r.json()).then((j) => {
       if (j.mode === "live") get().say("Builder", `Engine run complete: <b>${j.result?.leads ?? "?"}</b> leads kept, <b>${j.result?.dropped ?? "?"}</b> dropped by the citation validator.`);
     }).catch(() => {});
     g.sayTyping("Reviewer", "Every quote on the remaining 4 matches its source page. Receipts are on the back of each card.", 1500);

@@ -8,6 +8,7 @@ import Sprites from "@/components/Sprites";
 import Thinking from "@/components/Thinking";
 import Toast from "@/components/Toast";
 import { useApp } from "@/lib/store";
+import { HAS_API } from "@/lib/api";
 
 export default function Home() {
   const screen = useApp((s) => s.screen);
@@ -16,7 +17,7 @@ export default function Home() {
   const onStart = () => {
     setScreen("thinking");
     // Live ICP from Claude if a key is set; the route always falls back to demo data.
-    fetch("/api/icp", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(useApp.getState().intake) })
+    if (HAS_API) fetch("/api/icp", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(useApp.getState().intake) })
       .then((r) => r.json()).then((j) => j.icp && setIcp(j.icp, j.mode === "live" ? j.provider : "demo")).catch(() => {});
   };
   // #feed skips onboarding (handy for judges and screenshots).

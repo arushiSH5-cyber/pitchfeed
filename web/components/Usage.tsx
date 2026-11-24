@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useApp } from "@/lib/store";
+import { HAS_API } from "@/lib/api";
 import { Icon } from "./Sprites";
 
 type Health = { integrations: Record<string, "live" | "demo"> };
@@ -9,7 +10,7 @@ export default function Usage() {
   const ledger = useApp((s) => s.ledger);
   const credits = useApp((s) => s.credits);
   const [health, setHealth] = useState<Health | null>(null);
-  useEffect(() => { fetch("/api/health").then((r) => r.json()).then(setHealth)
+  useEffect(() => { if (!HAS_API) return setHealth({ integrations: { claude: "demo", gemini: "demo", flexprice: "demo", engine: "demo" } }); fetch("/api/health").then((r) => r.json()).then(setHealth)
       .catch(() => setHealth({ integrations: { claude: "demo", gemini: "demo", flexprice: "demo", engine: "demo" } })); }, []); // static hosting has no API routes
   const spent = ledger.graph * 0.1 + ledger.enrich * 5 + ledger.send;
   const rows: [string, string, number, number][] = [["Graph query", "graph_query", 0.1, ledger.graph], ["Lead enriched", "lead_enriched", 5, ledger.enrich], ["Outreach sent", "outreach_sent", 1, ledger.send]];
