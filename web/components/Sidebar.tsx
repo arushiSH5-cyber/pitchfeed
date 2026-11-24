@@ -13,6 +13,7 @@ export default function Sidebar() {
   const go = useApp((s) => s.go);
   const credits = useApp((s) => s.credits);
   const product = useApp((s) => s.intake.product);
+  const founder = useApp((s) => s.intake.founder.split(" ")[0] || "You");
   const topUp = useApp((s) => s.topUp);
   const nFeed = useApp((s) => pending(s.leads).length);
   const n = Math.floor(credits / 6);
@@ -40,7 +41,7 @@ export default function Sidebar() {
           <div className="bar"><i style={{ width: `${Math.min(100, (credits / 20) * 100)}%`, background: credits < 6 ? "var(--rose)" : "var(--gold)" }} /></div>
           <div className="faint" style={{ fontSize: 11.5 }}>{n ? `About ${n} more approval${n > 1 ? "s" : ""}` : "Top up to keep sending"}</div>
         </div>
-        <div className="me"><Char id="c-you" width={38} /><div><b>Arushi</b><small>Founder · that&apos;s you</small></div></div>
+        <div className="me"><Char id="c-you" width={38} /><div><b>{founder}</b><small>Founder · that&apos;s you</small></div></div>
       </div>
     </aside>
   );

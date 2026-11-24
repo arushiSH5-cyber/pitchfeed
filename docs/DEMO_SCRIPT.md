@@ -10,7 +10,7 @@ Record at 1440×900 or larger, browser zoom 100%, crew room open. Start from a f
 | 0:28–0:42 | **ICP** | Point at confidence bars and rule-outs. Click **Add** on "University service clubs". Click **Approve profile and find leads**. | "Every field has a confidence score. I can add an adjacent segment before anything runs." |
 | 0:42–0:52 | **Feed** | Let the crew room messages land ("Dropped Coastline… hiring freeze"). | "Six found, two dropped because the facts didn't check out." |
 | 0:52–1:02 | **Flip receipt** | Press **Space** (or Receipt). Point at verified source, checks, sign-offs, 6.1 credits. Flip back. | "Every claim comes with a receipt." |
-| 1:02–1:10 | **Warm path** | Click **path** on the card. Drag to spin. Close. | "Gold is the shortest path from me to Dana, through an SJSU alum." |
+| 1:02–1:10 | **Warm path** | Click **path** on the card. Drag to spin. Close. | "Gold is the shortest path from me to Dana, through an Bayview State alum." |
 | 1:10–1:22 | **Edit + block** | Press **↑**. Type "We guarantee results." The hype check turns red and Approve disables. Click **Redraft from signal**, then **Approve and send**. | "Hype gets blocked. The redraft uses only the cited quote." |
 | 1:22–1:32 | **Approve 3** | Press **→** twice more (3 sent total). Watch Sent today and credits drop. | "Only I can approve. Each one costs six credits: five to verify the email, one to send." |
 | 1:32–1:42 | **Credit gate** | Press **→** on the 4th card. Credit modal opens. Click **Add 30 credits**. | "Out of credits, Security pauses enrichment. Metered by Flexprice, pay per lead, not per seat." |

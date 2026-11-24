@@ -2,7 +2,7 @@
 import type { Lead } from "./demo-data";
 
 type N = { id: string; kind: string; x: number; y: number; z: number };
-const ORGS = ["San José State", "CodePath", "Student Union", "AI4ALL"];
+const ORGS = ["Bayview State", "LaunchLab", "Campus Union", "Code Commons"];
 
 export function createConstellation(canvas: HTMLCanvasElement, leads: Lead[], opts: { reveal?: boolean } = {}) {
   const ctx = canvas.getContext("2d")!;

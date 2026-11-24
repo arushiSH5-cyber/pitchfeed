@@ -4,7 +4,7 @@ import { HYPE, type Lead } from "@/lib/demo-data";
 
 const SYSTEM = `You write a short first-touch email for a founder.
 Use ONLY the one cited signal you are given: quote it verbatim inside “curly quotes”. Invent no other facts, numbers or names.
-Mention the warm intro if one is given. 70-120 words, friendly, no hype words (${HYPE.join(", ")}), no links. End with one question, then a sign-off line "Arushi, Togather".
+Mention the warm intro if one is given. 70-120 words, friendly, no hype words (${HYPE.join(", ")}), no links. End with one question, then a sign-off line "Sam, Togather".
 Return ONLY JSON: {"body": "..."} with \\n for line breaks.`;
 
 export async function POST(req: Request) {

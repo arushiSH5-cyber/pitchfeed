@@ -24,18 +24,19 @@ export default function Intake({ onStart }: { onStart: () => void }) {
             </div>
             <div className="form card-s">
               <div className="row2">
+                <div className="field"><label className="label">Your name</label><input {...f("founder")} /></div>
                 <div className="field"><label className="label">Product</label><input {...f("product")} /></div>
-                <div className="field"><label className="label">Website</label><input {...f("website")} /></div>
               </div>
               <div className="field"><label className="label">What does it do?</label><textarea rows={2} {...f("what")} /></div>
               <div className="row2">
+                <div className="field"><label className="label">Website</label><input {...f("website")} /></div>
                 <div className="field"><label className="label">Pricing</label><input {...f("pricing")} /></div>
-                <div className="field"><label className="label">Current customers</label><input {...f("customers")} /></div>
               </div>
               <div className="row2">
+                <div className="field"><label className="label">Current customers</label><input {...f("customers")} /></div>
                 <div className="field"><label className="label">Schools &amp; programs</label><input {...f("schools")} /></div>
-                <div className="field"><label className="label">Past workplaces</label><input {...f("workplaces")} /></div>
               </div>
+              <div className="field"><label className="label">Past workplaces</label><input {...f("workplaces")} /></div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 4 }}>
                 <span className="faint" style={{ fontSize: 12.5 }}>Your background is only used to find warm intros.</span>
                 <button className="btn btn-ink" id="startBtn" onClick={onStart}>Find my customers <Icon id="i-arrowR" size={16} /></button>

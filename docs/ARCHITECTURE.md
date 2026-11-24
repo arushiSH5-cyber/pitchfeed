@@ -30,7 +30,7 @@ Intake → ICP (LLM, confidence per field) → founder approves
 | `Product` | id, name | What you sell (Togather) |
 | `Competitor` | id, name, category | Alternatives buyers could pick |
 | `Signal` | id, type, text, url, days_ago | A cited reason to talk now (hiring, event, pain, funding) |
-| `Org` | id, name, kind | Schools and programs (SJSU, CodePath, AI4ALL) |
+| `Org` | id, name, kind | Schools and programs (Bayview State, LaunchLab, Code Commons) |
 
 **Edges**
 
