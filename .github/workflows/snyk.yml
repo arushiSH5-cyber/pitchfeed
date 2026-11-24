@@ -6,22 +6,28 @@ jobs:
     permissions:
       contents: read
       security-events: write
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+      - name: Skip notice
+        if: env.SNYK_TOKEN == ''
+        run: echo "SNYK_TOKEN secret not set; add it in repo Settings → Secrets to run Snyk SCA + SAST."
       - uses: actions/setup-python@v5
+        if: env.SNYK_TOKEN != ''
         with:
           python-version: "3.12"
       - run: pip install -r engine/requirements.txt
+        if: env.SNYK_TOKEN != ''
       - uses: snyk/actions/setup@master
+        if: env.SNYK_TOKEN != ''
       - name: Snyk Open Source (SCA)
+        if: env.SNYK_TOKEN != ''
         run: snyk test --file=engine/requirements.txt --package-manager=pip --severity-threshold=high
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - name: Snyk Code (SAST)
+        if: env.SNYK_TOKEN != ''
         run: snyk code test --sarif-file-output=snyk-code.sarif || true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - uses: github/codeql-action/upload-sarif@v3
-        if: always()
+        if: env.SNYK_TOKEN != '' && always()
         with:
           sarif_file: snyk-code.sarif
