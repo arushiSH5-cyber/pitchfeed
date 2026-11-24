@@ -1,0 +1,132 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=DM+Sans:wght@400;500;600;700&family=Caveat:wght@500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F6F0E7;--surface:#FCFAF6;--ink:#2B3555;--ink-2:#5A6380;--ink-3:#8F95A8;--gold:#D39C4A;--gold-soft:#F3E0BC;--rose:#D4888A;--rose-soft:#F5DAD6;--lav:#9EA3D6;--lav-soft:#E6E6F4;--sage:#8BA894;--sage-soft:#E2ECE4}
+*{box-sizing:border-box;margin:0}
+html,body{width:100%;height:100%;overflow:hidden}
+body{font-family:"DM Sans",system-ui;color:var(--ink);background:radial-gradient(60% 70% at 15% 20%,#F5DAD6 0,transparent 60%),radial-gradient(50% 60% at 85% 80%,#E6E6F4 0,transparent 60%),radial-gradient(40% 50% at 80% 10%,#F3E0BC 0,transparent 60%),var(--paper);display:flex;align-items:center;justify-content:center}
+.card{display:none;width:100%;height:100%;padding:90px 120px;position:relative}
+.on{display:flex}
+.label{font:600 15px/1 "DM Sans";letter-spacing:.14em;text-transform:uppercase;color:var(--rose)}
+h1{font:500 92px/1.02 Fraunces;letter-spacing:-.02em}
+h1 em{font-style:italic;color:var(--gold)}
+h2{font:500 66px/1.08 Fraunces;letter-spacing:-.015em;margin:18px 0 26px}
+h2 em{font-style:italic;color:var(--rose)}
+p{font:400 27px/1.5 "DM Sans";color:var(--ink-2);max-width:900px}
+.brand{display:flex;align-items:center;gap:12px;font:600 italic 34px Fraunces;position:absolute;top:56px;left:120px}
+.hand{font:600 34px Caveat;color:var(--ink-2)}
+.pill{display:inline-flex;gap:10px;align-items:center;background:var(--surface);border:1px solid rgba(43,53,85,.14);border-radius:999px;padding:12px 20px;font:500 21px "DM Sans";margin:8px 10px 0 0;box-shadow:0 6px 16px -10px rgba(43,53,85,.3)}
+.bad{color:#B5524C}.good{color:#4E7A5C}
+/* 3D stack */
+.stage{perspective:1600px;position:absolute;width:340px;height:430px}
+.stack{position:relative;width:100%;height:100%;transform-style:preserve-3d;transform:rotateX(14deg) rotateY(-24deg) rotateZ(4deg)}
+.lc{position:absolute;width:330px;height:420px;border-radius:24px;background:var(--surface);border:1px solid rgba(43,53,85,.12);box-shadow:0 40px 70px -30px rgba(43,53,85,.45);padding:24px;font-size:14px}
+.lc h3{font:500 24px/1.15 Fraunces;margin-bottom:6px}
+.lc .sub{color:var(--ink-3);font-size:13px}
+.lc .why{margin-top:16px;border-left:3px solid var(--rose);background:#F8F3EC;border-radius:10px;padding:12px 14px;font:italic 400 16px/1.4 Fraunces}
+.lc .src{font:400 11px "DM Mono";color:var(--ink-3);margin-top:8px}
+.lc .warm{margin-top:14px;border:1px dashed var(--gold);background:#FBF3E4;border-radius:10px;padding:9px 12px;font-size:13px}
+.lc .score{position:absolute;right:22px;top:22px;width:52px;height:52px;border-radius:50%;border:5px solid var(--gold);display:grid;place-items:center;font:600 18px Fraunces}
+.lc .stamp{position:absolute;left:150px;top:300px;transform:rotate(-14deg);border:4px solid #4E7A5C;color:#4E7A5C;font:700 30px "DM Sans";letter-spacing:.1em;padding:4px 14px;border-radius:10px;background:rgba(252,250,246,.8)}
+.cats{display:flex;gap:14px;margin-top:30px}
+.cats svg{width:92px;height:92px;filter:drop-shadow(0 10px 12px rgba(43,53,85,.18))}
+.cats div{text-align:center;font:500 15px "DM Sans";color:var(--ink-2)}
+.big svg{width:120px;height:120px}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="1.5"/></filter>
+  <filter id="watercolor"><feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="8"/><feDisplacementMap in="SourceGraphic" scale="60"/></filter>
+  <!-- icons -->
+  <symbol id="i-plane" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15.5 27 5l-6.5 21-5.2-7.6L4 15.5Z"/><path d="m15.3 18.4 11.7-13.4"/><path d="M15.3 18.4 14 25l3.3-3.6"/></g></symbol>
+  <symbol id="i-check" viewBox="0 0 32 32"><path d="M6 17.5c3 2.2 5 4.6 6.6 7.3C15.8 17 20.4 11 26.5 6.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 32 32"><path d="M8.5 8c5 5.4 10 10.8 15.4 16.2M24 7.6C18.7 13.3 13.4 19 8 24.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 26.2 7.4 20 21.3 6.2a2.7 2.7 0 0 1 3.9 0l.7.7a2.7 2.7 0 0 1 0 3.9L12 24.7 6 26.2Z"/><path d="m18.6 9 4.6 4.6"/></g></symbol>
+  <symbol id="i-flip" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.5C7.5 8.7 11.5 6 16.3 6c4.5 0 8 2.3 9.7 6"/><path d="m26.4 6.4-.4 5.8-5.7-1"/><path d="M26 18.5c-1.5 4.8-5.5 7.5-10.3 7.5-4.5 0-8-2.3-9.7-6"/><path d="m5.6 25.6.4-5.8 5.7 1"/></g></symbol>
+  <symbol id="i-link" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13.6 18.4a5 5 0 0 0 7.1 0l4-4a5 5 0 0 0-7.1-7.1l-1.7 1.7"/><path d="M18.4 13.6a5 5 0 0 0-7.1 0l-4 4a5 5 0 0 0 7.1 7.1l1.7-1.7"/></g></symbol>
+  <symbol id="i-sun" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="16" cy="16" r="5.4"/><path d="M16 3.5v3.3M16 25.2v3.3M3.5 16h3.3M25.2 16h3.3M7.2 7.2l2.3 2.3M22.5 22.5l2.3 2.3M7.2 24.8l2.3-2.3M22.5 9.5l2.3-2.3"/></g></symbol>
+  <symbol id="i-moon" viewBox="0 0 32 32"><path d="M20.8 5.6A11 11 0 1 0 26.4 22 9 9 0 0 1 20.8 5.6Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+  <symbol id="i-halfsun" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9.5 21a6.5 6.5 0 0 1 13 0"/><path d="M4 21h24M16 8v3M7.5 11.5l2 2M24.5 11.5l-2 2M5 26h22"/></g></symbol>
+  <symbol id="i-star" viewBox="0 0 32 32"><path d="M16 3.5c1 6.5 2.6 10.6 12.5 12.5C18.6 17.9 17 22 16 28.5 15 22 13.4 17.9 3.5 16 13.4 14.1 15 10 16 3.5Z" fill="currentColor"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 32 32"><g fill="currentColor"><path d="M13 6c.7 4.6 1.9 7.3 8 8.5-6.1 1.2-7.3 3.9-8 8.5-.7-4.6-1.9-7.3-8-8.5 6.1-1.2 7.3-3.9 8-8.5Z"/><path d="M24 4c.3 2 .9 3.1 3.5 3.6-2.6.5-3.2 1.6-3.5 3.6-.3-2-.9-3.1-3.5-3.6 2.6-.5 3.2-1.6 3.5-3.6Z"/></g></symbol>
+  <symbol id="i-feed" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="8" y="6" width="16" height="21" rx="4"/><path d="M5 10v13M27 10v13" stroke-linecap="round"/></g></symbol>
+  <symbol id="i-grid" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="5" y="6" width="22" height="20" rx="4"/><path d="M5 12.6h22M5 19.3h22M13 6v20"/></g></symbol>
+  <symbol id="i-board" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="4.5" y="6" width="6.5" height="18" rx="2.5"/><rect x="12.8" y="6" width="6.5" height="12" rx="2.5"/><rect x="21" y="6" width="6.5" height="15" rx="2.5"/></g></symbol>
+  <symbol id="i-gift" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="12" width="21" height="14.5" rx="3"/><path d="M4.5 12h23M16 12v14.5"/><path d="M16 12c-1.5-4.5-6.5-6-7.5-3.5S12 12 16 12Zm0 0c1.5-4.5 6.5-6 7.5-3.5S20 12 16 12Z"/></g></symbol>
+  <symbol id="i-constel" viewBox="0 0 32 32"><path d="M7 22 13 11l8 5 5-9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="2 3"/><g fill="currentColor"><circle cx="7" cy="22" r="2.3"/><circle cx="13" cy="11" r="2.3"/><circle cx="21" cy="16" r="2.3"/><circle cx="26" cy="7" r="2.3"/></g></symbol>
+  <symbol id="i-chat" viewBox="0 0 32 32"><path d="M6 8.5C6 7 7 6 8.5 6h15C25 6 26 7 26 8.5v11c0 1.5-1 2.5-2.5 2.5H14l-6 4.5V22c-1.2 0-2-1-2-2.5v-11Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="16" cy="16" r="10"/><path d="M16 10.5c1 3.3 1.8 4.6 5.5 5.5-3.7.9-4.5 2.2-5.5 5.5-1-3.3-1.8-4.6-5.5-5.5 3.7-.9 4.5-2.2 5.5-5.5Z" stroke-linejoin="round"/></g></symbol>
+  <symbol id="i-hand" viewBox="0 0 32 32"><path d="M11 17V8.5a1.8 1.8 0 0 1 3.6 0V15m0-1V6.8a1.8 1.8 0 0 1 3.6 0V15m0-1.5V8.5a1.8 1.8 0 0 1 3.6 0V18c0 5.5-3 8.5-7.5 8.5-3.4 0-5.3-1.7-7-4.8L5.8 17.5a1.8 1.8 0 0 1 3-1.9L11 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrowL" viewBox="0 0 32 32"><path d="M19 7.5c-3.4 3-6.2 5.8-8.5 8.5 2.3 2.7 5.1 5.5 8.5 8.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrowR" viewBox="0 0 32 32"><path d="M13 7.5c3.4 3 6.2 5.8 8.5 8.5-2.3 2.7-5.1 5.5-8.5 8.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 64 32"><path d="M10 26c-4.5 0-6.5-5.5-2.5-8 0-5 5.5-7 8.5-4 1.5-6 10-8 13.5-2.5 2.5-4 10-3 10.5 2.5 5-1.5 9 3 6.5 7 4 .5 4.5 5-.5 5H10Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+  <symbol id="i-radar" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="5.5"/><path d="M16 16 24 8"/></g><circle cx="21" cy="19" r="1.8" fill="currentColor"/></symbol>
+  <symbol id="i-chess" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 26h12M11.5 22.5h9l-1.5-7h-6l-1.5 7Z"/><path d="M13 15.5c-2-1.5-2-5 0-7 1.5-1.5 4.5-1.5 6 0 2 2 2 5.5 0 7"/><path d="M16 5v2"/></g></symbol>
+  <symbol id="i-chart" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 26h22"/><path d="M8 21v-5M14 21v-10M20 21v-7M26 21V8"/></g></symbol>
+  <symbol id="i-list" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 9h14M12 16h14M12 23h10"/><circle cx="7" cy="9" r="1.4" fill="currentColor"/><circle cx="7" cy="16" r="1.4" fill="currentColor"/><circle cx="7" cy="23" r="1.4" fill="currentColor"/></g></symbol>
+  <symbol id="i-gauge" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 22a10 10 0 1 1 20 0"/><path d="m16 22 5-6"/></g></symbol>
+  <symbol id="i-download" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6v14M10.5 15l5.5 5.5 5.5-5.5M7 25.5h18"/></g></symbol>
+  <symbol id="i-shield" viewBox="0 0 32 32"><path d="M16 4.5 25 8v7c0 6-4 10.5-9 12.5C11 25.5 7 21 7 15V8l9-3.5Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="5" y="8" width="22" height="16" rx="3"/><path d="m6 9.5 10 7.5 10-7.5" stroke-linecap="round"/></g></symbol>
+  <!-- characters: working cats + founder bunny -->
+  <symbol id="cat-base" viewBox="0 0 64 64"><path d="M13 47c-2-11 0-21 4-28l5.5 7.5c6-2.8 13-2.8 19 0L47 19c4 7 6 17 4 28-1.5 6.5-9 9-19 9s-17.5-2.5-19-9Z" fill="#FFFDF8" stroke="#2B3555" stroke-width="2" stroke-linejoin="round"/><path d="M18.5 23.5l2.5 3.4M45.5 23.5 43 26.9" stroke="#F0B3AE" stroke-width="2.4" stroke-linecap="round"/><path d="M29.5 30v3M32 29.3v3.7M34.5 30v3" stroke="#B9BDCB" stroke-width="1.6" stroke-linecap="round"/><circle cx="25.5" cy="39" r="1.8" fill="#2B3555"/><circle cx="38.5" cy="39" r="1.8" fill="#2B3555"/><ellipse cx="21.5" cy="43" rx="3.2" ry="2" fill="#F5BDB7"/><ellipse cx="42.5" cy="43" rx="3.2" ry="2" fill="#F5BDB7"/><path d="M29.4 42c.8 1.2 1.8 1.2 2.6 0 .8 1.2 1.8 1.2 2.6 0" fill="none" stroke="#2B3555" stroke-width="1.4" stroke-linecap="round"/></symbol>
+  <symbol id="c-planner" viewBox="0 0 64 64"><use href="#cat-base"/><path d="M13.5 38C13 21 51 21 50.5 38" fill="none" stroke="#2B3555" stroke-width="3.2" stroke-linecap="round"/><rect x="9" y="33" width="8" height="12" rx="4" fill="#D4888A" stroke="#2B3555" stroke-width="1.8"/><rect x="47" y="33" width="8" height="12" rx="4" fill="#D4888A" stroke="#2B3555" stroke-width="1.8"/></symbol>
+  <symbol id="c-builder" viewBox="0 0 64 64"><use href="#cat-base"/><g stroke="#2B3555" stroke-width="1.9" stroke-linejoin="round"><path d="M6 59h52" stroke-linecap="round"/><rect x="18" y="44" width="28" height="15" rx="2.5" fill="#C9CCEA"/></g><path d="M32 54.5c-1.6-1.2-2.8-2.1-2.8-3.4a1.4 1.4 0 0 1 2.8-.5 1.4 1.4 0 0 1 2.8.5c0 1.3-1.2 2.2-2.8 3.4Z" fill="#6A6FA3"/><path d="M50 18c2-1.5 4.5-1 4.5 1s-3 2-2.2 4" fill="none" stroke="#7D84C9" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="c-reviewer" viewBox="0 0 64 64"><use href="#cat-base"/><g fill="none" stroke="#2B3555" stroke-width="1.7"><circle cx="25.5" cy="39" r="5.2"/><circle cx="38.5" cy="39" r="5.2"/><path d="M30.7 38.5c.8-.6 1.8-.6 2.6 0M20.3 38l-4-1.5M43.7 38l4-1.5" stroke-linecap="round"/></g><rect x="40" y="50" width="12" height="9" rx="1.5" fill="#F3E0BC" stroke="#2B3555" stroke-width="1.6" transform="rotate(-8 46 54)"/><path d="M42.5 53.5h6M42.8 56h4.5" stroke="#2B3555" stroke-width="1.2" stroke-linecap="round" transform="rotate(-8 46 54)"/></symbol>
+  <symbol id="c-security" viewBox="0 0 64 64"><use href="#cat-base"/><path d="M15 27.5c2-9 32-9 34 0-10-2.5-24-2.5-34 0Z" fill="#A39D7B" stroke="#2B3555" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 27.5c-5 .5-7.5 2.5-2 3.5 2.5.4 5-.6 8-1.6" fill="#A39D7B" stroke="#2B3555" stroke-width="1.8" stroke-linejoin="round"/><path d="M32 47.5 37 49.4v3.4c0 2.8-2.2 4.8-5 5.8-2.8-1-5-3-5-5.8v-3.4l5-1.9Z" fill="#F3E0BC" stroke="#2B3555" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="c-you" viewBox="0 0 64 64"><g stroke="#2B3555" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M42 31c5.5-2 8.5 3 7 13-.8 5-3.5 6.5-4.5 2.5" fill="#FFFDF8"/><ellipse cx="32" cy="43" rx="15" ry="14.5" fill="#FFFDF8"/><path d="M17 32.5C17.5 19 46.5 18.5 47.5 32.5c-9.5-2.4-21-2.4-30.5 0Z" fill="#A39D7B"/><path d="M17.5 32.5c-6.5.6-10 3.5-3 4.8 3 .5 6.5-1 10-2" fill="#A39D7B"/><path d="M32 20v-1.6"/></g><path d="M45.5 40c1.4 3.2 1 6.2-.4 7" fill="none" stroke="#EFA6A2" stroke-width="2.2" stroke-linecap="round"/><circle cx="27" cy="42" r="1.8" fill="#2B3555"/><circle cx="37" cy="42" r="1.8" fill="#2B3555"/><ellipse cx="23.5" cy="46" rx="2.6" ry="1.6" fill="#F5BDB7"/><ellipse cx="40.5" cy="46" rx="2.6" ry="1.6" fill="#F5BDB7"/><path d="M31 45.6l1 .8 1-.8" fill="none" stroke="#2B3555" stroke-width="1.3" stroke-linecap="round"/><path d="M12 22.5c-.7-1.5.3-2.8 1.6-2.2.5-1.4 2.2-1 2 .6-.3 1.8-2.6 2.6-3.6 1.6Z" fill="none" stroke="#2B3555" stroke-width="1.2"/></symbol>
+</defs></svg>
+
+<section class="card" id="banner" style="align-items:center">
+  <div style="max-width:640px;z-index:2">
+    <div style="display:flex;align-items:center;gap:12px;font:600 italic 40px Fraunces;margin-bottom:26px"><svg width="40" height="40"><use href="#i-plane"/></svg>pitchfeed</div>
+    <h1 style="font-size:78px">Swipe right on your <em>first</em> customers.</h1>
+    <p style="margin-top:22px;font-size:24px">Real reasons to reach out, the warm path to the buyer, a cited draft you approve with a swipe.</p>
+    <div class="cats" style="margin-top:26px"><div><svg viewBox="0 0 64 64"><use href="#c-planner"/></svg>Planner</div><div><svg viewBox="0 0 64 64"><use href="#c-builder"/></svg>Builder</div><div><svg viewBox="0 0 64 64"><use href="#c-reviewer"/></svg>Reviewer</div><div><svg viewBox="0 0 64 64"><use href="#c-security"/></svg>Security</div><div><svg viewBox="0 0 64 64"><use href="#c-you"/></svg>You</div></div>
+  </div>
+  <div class="stage" style="right:200px;top:50%;margin-top:-215px"><div class="stack">
+  <div class="lc" style="transform:translate3d(60px,40px,-160px);opacity:.75"><h3>Bayside Literacy Project</h3><div class="sub">Civic and social</div></div>
+  <div class="lc" style="transform:translate3d(30px,20px,-80px);opacity:.9"><h3>Riverside Food Bank</h3><div class="sub">Food banks · 2,000 volunteers</div></div>
+  <div class="lc"><div class="score">86</div><h3 style="padding-right:60px">Maple Grove Volunteer Center</h3><div class="sub">Civic and social · 900 volunteers</div>
+    <div class="why">“seeking a Volunteer Coordinator to recruit, schedule and retain our volunteers”</div><div class="src">maplegrove-vc.example/jobs · 4d ago · verified</div>
+    <div class="warm">Warm intro via <b>Priya Shah</b>, a fellow alum</div><div class="stamp">SEND</div></div>
+</div></div>
+</section>
+
+<section class="card" id="title" style="flex-direction:column;justify-content:center">
+  <span class="label">The honest go-to-market engine</span>
+  <h1 style="margin-top:22px;max-width:900px">Swipe right on your <em>first</em> customers.</h1>
+  <div class="cats big"><div><svg viewBox="0 0 64 64"><use href="#c-planner"/></svg></div><div><svg viewBox="0 0 64 64"><use href="#c-builder"/></svg></div><div><svg viewBox="0 0 64 64"><use href="#c-reviewer"/></svg></div><div><svg viewBox="0 0 64 64"><use href="#c-security"/></svg></div><div><svg viewBox="0 0 64 64"><use href="#c-you"/></svg></div></div>
+  <div class="stage" style="right:170px;top:50%;margin-top:-215px"><div class="stack">
+  <div class="lc" style="transform:translate3d(60px,40px,-160px);opacity:.75"><h3>Bayside Literacy Project</h3><div class="sub">Civic and social</div></div>
+  <div class="lc" style="transform:translate3d(30px,20px,-80px);opacity:.9"><h3>Riverside Food Bank</h3><div class="sub">Food banks · 2,000 volunteers</div></div>
+  <div class="lc"><div class="score">86</div><h3 style="padding-right:60px">Maple Grove Volunteer Center</h3><div class="sub">Civic and social · 900 volunteers</div>
+    <div class="why">“seeking a Volunteer Coordinator to recruit, schedule and retain our volunteers”</div><div class="src">maplegrove-vc.example/jobs · 4d ago · verified</div>
+    <div class="warm">Warm intro via <b>Priya Shah</b>, a fellow alum</div><div class="stamp">SEND</div></div>
+</div></div>
+</section>
+
+<section class="card" id="problem" style="flex-direction:column;justify-content:center">
+  <div class="brand"><svg width="34" height="34"><use href="#i-plane"/></svg>pitchfeed</div>
+  <span class="label">The problem</span>
+  <h2>Great product. <em>No network.</em> No sales playbook.</h2>
+  <p>First-time founders don't know who to talk to or who can introduce them. AI sales tools made it worse: thousands of generic, made-up emails that get ignored, or banned.</p>
+  <div style="margin-top:28px"><span class="pill bad">✕ Spray-and-pray volume</span><span class="pill bad">✕ Invented "facts"</span><span class="pill bad">✕ No human in the loop</span></div>
+</section>
+
+<section class="card" id="solution" style="flex-direction:column;justify-content:center">
+  <div class="brand"><svg width="34" height="34"><use href="#i-plane"/></svg>pitchfeed</div>
+  <span class="label" style="color:#4E7A5C">The solution</span>
+  <h2>Few, <em style="color:var(--gold)">true</em>, well-timed messages.</h2>
+  <p>Pitchfeed finds organizations with a real reason to talk right now, shows the warm path to the buyer, and drafts a note from one cited signal. You approve every send with a swipe.</p>
+  <div style="margin-top:28px"><span class="pill good">✓ Every fact cited</span><span class="pill good">✓ Warm intros from your graph</span><span class="pill good">✓ Only humans approve</span><span class="pill good">✓ Pay per lead, not per seat</span></div>
+</section>
+
+<section class="card" id="outro" style="flex-direction:column;justify-content:center;align-items:center;text-align:center">
+  <div style="display:flex;align-items:center;gap:14px;font:600 italic 56px Fraunces"><svg width="56" height="56"><use href="#i-plane"/></svg>pitchfeed</div>
+  <h2 style="margin-top:22px">Few, true, well-timed messages.</h2>
+  <p style="max-width:none">Try it live: <b style="color:var(--ink)">arushish5-cyber.github.io/pitchfeed</b></p>
+  <div class="cats big" style="justify-content:center"><div><svg viewBox="0 0 64 64"><use href="#c-planner"/></svg></div><div><svg viewBox="0 0 64 64"><use href="#c-builder"/></svg></div><div><svg viewBox="0 0 64 64"><use href="#c-reviewer"/></svg></div><div><svg viewBox="0 0 64 64"><use href="#c-security"/></svg></div><div><svg viewBox="0 0 64 64"><use href="#c-you"/></svg></div></div>
+  <div class="hand" style="margin-top:8px">your crew drafts, you decide</div>
+</section>
+<script>document.getElementById((location.hash||"#title").slice(1)).classList.add("on")</script>
+</body></html>

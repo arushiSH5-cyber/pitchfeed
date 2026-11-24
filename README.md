@@ -1,10 +1,36 @@
-# Pitchfeed
+<p align="center"><img src="docs/banner.png" alt="Pitchfeed: swipe right on your first customers" width="100%"></p>
 
-> **Swipe right on your first customers.** An honest go-to-market engine for first-time founders: it finds organizations with a real reason to talk right now, shows the warm path to the buyer, drafts a note from one cited signal, and lets you approve each send with a swipe. Every claim comes with a receipt.
+<p align="center">
+  <a href="https://arushish5-cyber.github.io/pitchfeed/"><img alt="Live demo" src="https://img.shields.io/badge/▶_live_demo-D39C4A?style=for-the-badge"></a>
+  <a href="https://arushish5-cyber.github.io/pitchfeed/demo.mp4"><img alt="Demo video" src="https://img.shields.io/badge/demo_video-1:40-2B3555?style=for-the-badge"></a>
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js_14-2B3555?style=for-the-badge&logo=nextdotjs">
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-8BA894?style=for-the-badge&logo=fastapi&logoColor=white">
+  <img alt="Band" src="https://img.shields.io/badge/agents-Band-9EA3D6?style=for-the-badge">
+  <img alt="Flexprice" src="https://img.shields.io/badge/billing-Flexprice-D4888A?style=for-the-badge">
+</p>
 
-### ▶ [Try the live demo](https://arushish5-cyber.github.io/pitchfeed/) · [skip straight to the feed](https://arushish5-cyber.github.io/pitchfeed/#feed) · [2.5-min demo script](docs/DEMO_SCRIPT.md)
+> **Pitchfeed** is an honest go-to-market engine for first-time founders. It finds organizations with a real reason to talk right now, shows the warm path to the buyer, drafts a note from one cited signal, and lets you approve each send with a swipe. Every claim comes with a receipt.
 
-![Pitchfeed feed: swipe card with cited signal, lead brief and Band crew room](docs/screenshots/feed.png)
+## 🎬 Watch the demo
+
+<p align="center"><a href="https://arushish5-cyber.github.io/pitchfeed/demo.mp4"><img src="web/public/demo-poster.png" alt="Play the 1:40 demo video" width="80%"></a><br><sub>Click to play: the problem, the solution, and a full walkthrough with narration.</sub></p>
+
+## The problem → the solution
+
+| 😩 The problem | ✨ Pitchfeed |
+|---|---|
+| Great product, **no network**, no sales playbook | Warm paths from your own school and work graph |
+| AI SDRs blast **generic, made-up** emails | Every fact cited; unverified claims are dropped |
+| Nobody checks before it sends | **Only a human can approve**, with a swipe |
+| Seat pricing for tools you barely use | Pay per lead you act on (Flexprice credits) |
+
+<table><tr>
+<td><img src="docs/screenshots/feed.png" alt="Feed"><br><sub><b>Feed</b>: cited reason to talk, warm intro, drafted email, crew room</sub></td>
+<td><img src="media/scenes/08a-receipt.png" alt="Proof receipt"><br><sub><b>Proof receipt</b>: every claim, check and credit</sub></td>
+</tr><tr>
+<td><img src="media/scenes/10-credit.png" alt="Credit gate"><br><sub><b>Credit gate</b>: Security pauses enrichment at zero</sub></td>
+<td><img src="media/scenes/12b-insights.png" alt="Insights"><br><sub><b>Insights</b>: funnel, opener A/B, reply rate by tier</sub></td>
+</tr></table>
 
 ## Judges: try it in 60 seconds
 

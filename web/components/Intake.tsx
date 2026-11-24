@@ -2,11 +2,15 @@
 import { useApp } from "@/lib/store";
 import type { Intake as IntakeT } from "@/lib/demo-data";
 import OnbTop from "./OnbTop";
+import { useState } from "react";
 import { Char, Icon } from "./Sprites";
+
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export default function Intake({ onStart }: { onStart: () => void }) {
   const intake = useApp((s) => s.intake);
   const setIntake = useApp((s) => s.setIntake);
+  const [video, setVideo] = useState(false);
   const f = (k: keyof IntakeT) => ({ value: intake[k], onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setIntake({ [k]: e.target.value }) });
   return (
     <section className="screen onb on" id="intake">
@@ -17,6 +21,7 @@ export default function Intake({ onStart }: { onStart: () => void }) {
             <span className="label" style={{ color: "var(--rose)" }}>The honest go-to-market engine</span>
             <h1>Find your first <em>ten</em> customers. Skip the cold spam.</h1>
             <p className="lead">Pitchfeed finds organizations with a real reason to talk right now, shows who can introduce you, and drafts a note you approve with a swipe. Every claim comes with a receipt.</p>
+            <button className="btn btn-gold" style={{ marginBottom: 14 }} onClick={() => setVideo(true)}>▶ Watch the 90-second demo</button>
             <div className="proof-row">
               {["Every fact cited", "You approve every send", "Pay per lead, not per seat"].map((t) => (
                 <span key={t}><Icon id="i-check" size={16} style={{ color: "var(--sage)" }} />{t}</span>
@@ -56,6 +61,13 @@ export default function Intake({ onStart }: { onStart: () => void }) {
             </div>
             <div className="art-note" style={{ left: 20, top: 330, transform: "rotate(-4deg)" }}>your crew drafts, you decide</div>
           </div>
+        </div>
+      </div>
+      <div className={`overlay${video ? " on" : ""}`} onClick={(e) => e.target === e.currentTarget && setVideo(false)}>
+        <div className="sheet" style={{ width: "min(960px, 92vw)", maxWidth: "none" }}>
+          <button className="icon-btn close" onClick={() => setVideo(false)}><Icon id="i-x" size={16} /></button>
+          <h3>Pitchfeed in 90 seconds</h3>
+          {video && <video src={`${BASE}/demo.mp4`} poster={`${BASE}/demo-poster.png`} controls autoPlay playsInline style={{ width: "100%", borderRadius: 14, marginTop: 12 }} />}
         </div>
       </div>
     </section>
