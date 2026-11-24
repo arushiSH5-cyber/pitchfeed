@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { claudeJSON } from "@/lib/claude";
+import { llmJSON } from "@/lib/llm";
 import { HYPE, type Lead } from "@/lib/demo-data";
 
 const SYSTEM = `You write a short first-touch email for a founder.
@@ -11,10 +11,11 @@ export async function POST(req: Request) {
   const { lead } = (await req.json().catch(() => ({}))) as { lead?: Lead };
   if (!lead) return NextResponse.json({ error: "lead required" }, { status: 400 });
   const s = lead.signals[0];
-  const out = await claudeJSON<{ body: string }>(SYSTEM, JSON.stringify({
+  const out = await llmJSON<{ body: string }>(SYSTEM, JSON.stringify({
     to: `${lead.buyer}, ${lead.title} at ${lead.company}`, signal: { quote: s.q, source: s.src }, warm_intro: lead.via, product: "Togather: volunteers find shifts in a short video feed, sign up in one tap, get reminders.",
   }), 1500);
   // Citation guard: a live draft that drops the cited quote is rejected in favour of the demo draft.
-  if (out?.body && out.body.includes(s.q.slice(0, 28))) return NextResponse.json({ mode: "live", body: out.body });
+  const body = out?.data.body;
+  if (body && body.includes(s.q.slice(0, 28))) return NextResponse.json({ mode: "live", provider: out!.provider, body });
   return NextResponse.json({ mode: "demo", body: lead.body });
 }

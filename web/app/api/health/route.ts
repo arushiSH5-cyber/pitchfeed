@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { MODEL } from "@/lib/claude";
+import { CLAUDE_MODEL, GEMINI_MODEL, provider } from "@/lib/llm";
 
 export const dynamic = "force-dynamic";
 
@@ -12,9 +12,11 @@ export async function GET() {
     ok: true,
     integrations: {
       claude: process.env.ANTHROPIC_API_KEY ? "live" : "demo",
+      gemini: process.env.GEMINI_API_KEY ? "live" : "demo",
       flexprice: process.env.FLEXPRICE_API_KEY ? "live" : "demo",
       engine,
     },
-    model: MODEL,
+    llm: provider(),
+    model: provider() === "gemini" ? GEMINI_MODEL : CLAUDE_MODEL,
   });
 }

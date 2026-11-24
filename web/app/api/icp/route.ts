@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { claudeJSON } from "@/lib/claude";
+import { llmJSON } from "@/lib/llm";
 import { ICP, INTAKE, type ICPT, type Row } from "@/lib/demo-data";
 
 const SYSTEM = `You turn a founder's product intake into an ideal customer profile (ICP).
@@ -15,7 +15,7 @@ const valid = (x: unknown): x is ICPT =>
 
 export async function POST(req: Request) {
   const intake = { ...INTAKE, ...(await req.json().catch(() => ({}))) };
-  const icp = await claudeJSON<ICPT>(SYSTEM, JSON.stringify(intake));
-  if (valid(icp)) return NextResponse.json({ mode: "live", icp });
+  const out = await llmJSON<ICPT>(SYSTEM, JSON.stringify(intake));
+  if (out && valid(out.data)) return NextResponse.json({ mode: "live", provider: out.provider, icp: out.data });
   return NextResponse.json({ mode: "demo", icp: ICP });
 }

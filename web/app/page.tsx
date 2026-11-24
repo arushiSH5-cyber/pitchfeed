@@ -1,5 +1,5 @@
 "use client";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import AppShell from "@/components/AppShell";
 import IcpReview from "@/components/IcpReview";
 import Intake from "@/components/Intake";
@@ -17,8 +17,10 @@ export default function Home() {
     setScreen("thinking");
     // Live ICP from Claude if a key is set; the route always falls back to demo data.
     fetch("/api/icp", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(useApp.getState().intake) })
-      .then((r) => r.json()).then((j) => j.icp && setIcp(j.icp, j.mode === "live")).catch(() => {});
+      .then((r) => r.json()).then((j) => j.icp && setIcp(j.icp, j.mode === "live" ? j.provider : "demo")).catch(() => {});
   };
+  // #feed skips onboarding (handy for judges and screenshots).
+  useEffect(() => { if (window.location.hash === "#feed" && useApp.getState().screen === "intake") startApp(); }, [startApp]);
   const onThinkDone = useCallback(() => setScreen("icp"), [setScreen]);
 
   return (

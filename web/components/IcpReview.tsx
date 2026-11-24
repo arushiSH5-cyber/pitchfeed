@@ -26,14 +26,14 @@ const Panel = ({ ic, t, cls = "", children }: { ic: string; t: string; cls?: str
 
 export default function IcpReview({ onGo }: { onGo: () => void }) {
   const icp = useApp((s) => s.icp);
-  const live = useApp((s) => s.icpSource === "live");
+  const live = useApp((s) => s.icpSource);
   const [exp, setExp] = useState<Record<number, "accepted" | "dismissed">>({});
   return (
     <section className="screen onb on" id="icp">
       <OnbTop step={2} />
       <div className="onb-body"><div className="icp-wrap">
         <div className="icp-head">
-          <div><span className="label">Inferred from your product{live ? " · live from Claude" : ""}</span><h2>Here&apos;s who we think you should talk to</h2></div>
+          <div><span className="label">Inferred from your product{live !== "demo" ? ` · live from ${live === "gemini" ? "Gemini" : "Claude"}` : ""}</span><h2>Here&apos;s who we think you should talk to</h2></div>
           <p>Bars show how confident the crew is. Tweak anything, add the ideas you like, then we&apos;ll find real organizations.</p>
         </div>
         <div className="icp-grid" id="icpGrid">

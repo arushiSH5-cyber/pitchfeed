@@ -14,14 +14,14 @@ const timers: ReturnType<typeof setTimeout>[] = [];
 const later = (fn: () => void, ms: number) => timers.push(setTimeout(fn, ms));
 
 type S = {
-  screen: Screen; view: View; intake: Intake; icp: ICPT; icpSource: "demo" | "live";
+  screen: Screen; view: View; intake: Intake; icp: ICPT; icpSource: "demo" | "claude" | "gemini";
   credits: number; sentToday: number; ledger: Record<Kind, number>; logs: LogRow[];
   leads: Lead[]; incoming: Incoming[]; signalsShown: number; msgs: Msg[]; crewOpen: boolean;
   editId: string | null; mapId: string | null; creditOpen: boolean; wrappedOpen: boolean;
   toast: { html: string; n: number } | null; leaving: string | null;
   flyOut: ((dir: 1 | -1) => void) | null;
 
-  setScreen: (s: Screen) => void; go: (v: View) => void; setIntake: (i: Partial<Intake>) => void; setIcp: (i: ICPT, live: boolean) => void;
+  setScreen: (s: Screen) => void; go: (v: View) => void; setIntake: (i: Partial<Intake>) => void; setIcp: (i: ICPT, src: "demo" | "claude" | "gemini") => void;
   toggleCrew: () => void; showToast: (html: string) => void;
   spend: (kind: Kind, target: string) => void; log: (who: string, action: string, target?: string, cr?: number) => void;
   say: (agent: string, html: string, cls?: string, ask?: Msg["ask"]) => number; sayTyping: (agent: string, html: string, delay: number, cls?: string) => void;
@@ -49,7 +49,7 @@ export const useApp = create<S>((set, get) => ({
   setScreen: (screen) => set({ screen }),
   go: (view) => set({ view }),
   setIntake: (i) => set((s) => ({ intake: { ...s.intake, ...i } })),
-  setIcp: (icp, live) => set({ icp, icpSource: live ? "live" : "demo" }),
+  setIcp: (icp, icpSource) => set({ icp, icpSource }),
   toggleCrew: () => set((s) => ({ crewOpen: !s.crewOpen })),
   showToast: (html) => set((s) => ({ toast: { html, n: (s.toast?.n || 0) + 1 } })),
 

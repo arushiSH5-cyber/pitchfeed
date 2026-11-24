@@ -35,7 +35,7 @@ export default function EditSheet() {
       const r = await fetch("/api/draft", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ lead }) });
       const j = await r.json();
       setText(j.body);
-      say("Builder", `Redrafted ${lead.company} from its cited signal only${j.mode === "live" ? " (Claude)" : " (demo draft)"}.`);
+      say("Builder", `Redrafted ${lead.company} from its cited signal only${j.mode === "live" ? (j.provider === "gemini" ? " (Gemini)" : " (Claude)") : " (demo draft)"}.`);
     } catch { showToast("Redraft unavailable, kept your text"); }
     setBusy(false);
   };
